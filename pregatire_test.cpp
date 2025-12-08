@@ -79,16 +79,16 @@ public:
 
 	}
 	void setDenumire(char* denumireData) {
-		if (this->denumire != nullptr)
-			delete[] this->denumire;
-		this->denumire = nullptr;
 		if (strlen(denumireData) > 2) {
+			if (this->denumire != nullptr)
+				delete[] this->denumire;
 			this->denumire = new char[strlen(denumireData) + 1];
 			strcpy(this->denumire, denumireData);
 		} 
 
 	}
 	char* getDenumire() {
+		if(this->denumire == nullptr) return nullptr;
 		char* copie = new char[strlen(this->denumire) + 1];///ATENTIE
 		strcpy(copie, this->denumire);
 		return copie;
@@ -112,7 +112,6 @@ public:
 	void setgramajIngrediente(int nrIngredienteDate, float* gramajIngredienteDat) {
 		if (nrIngredienteDate > 0 && gramajIngredienteDat != nullptr) {
 			delete[]this->gramajIngrediente;
-			this->gramajIngrediente = nullptr;
 			this->nrIngrediente = nrIngredienteDate;
 			this->gramajIngrediente = new float[nrIngrediente];
 			for (int i = 0; i < nrIngredienteDate; i++)
@@ -236,33 +235,39 @@ public:
 	 return out;
  }
  istream& operator>>(istream& in, Prajitura& sursa) {
+	 cout << "Introduceti denumire: ";
+	 char buffer[100];
+	 in >> buffer;
 
-	 cout << endl << "Denumire data: " << sursa.denumire;
-	 char buffer[100];///
-     in >> buffer;///
-	 if (sursa.denumire != nullptr)
-	 delete[] sursa.denumire;////
-	 sursa.denumire = new char[strlen(buffer) + 1];///
-	 strcpy(sursa.denumire, buffer);///ATENTIE LA PROCEDEU DE CITIRE DENUMIRE CHAR*
-	
-	 
-	 cout << endl << "Nr calorii: " << sursa.nrCalorii;
+	 if (sursa.denumire != nullptr) delete[] sursa.denumire;
+	sursa.denumire = new char[strlen(buffer) + 1];
+	 strcpy(sursa.denumire, buffer);
+
+	 cout << "Nr Calorii: ";
 	 in >> sursa.nrCalorii;
-	 cout << endl << "Nr ingrediente: " << sursa.nrIngrediente ;
-	 in >> sursa.nrIngrediente;
 
-	 if (sursa.gramajIngrediente != nullptr) delete[] sursa.gramajIngrediente;////
-	 sursa.gramajIngrediente = new float[sursa.nrIngrediente];///Atentie la procedeu citire vector alocat dinamic
-	 for (int i = 0; i < sursa.nrIngrediente; i++) {///
-		 cout << endl << "Gramaj" << sursa.gramajIngrediente[i+1] <<":";///
-		 in >> sursa.gramajIngrediente[i];///
+	 cout << "Este Vegana (1/0): ";
+	 in >> sursa.esteVegana;
+
+	 cout << "Nr Ingrediente: ";
+	 if (sursa.nrIngrediente > 0)
+	 in >> sursa.nrIngrdiente;
+
+	 if (sursa.gramajIngrediente != nullptr) delete[] sursa.gramajIngrediente;
+		 sursa.gramajIngrediente = new float[sursa.nrIngrediente];
+		 for (int i = 0; i < sursa.nrIngrediente; i++) {
+			 cout << "Gramaj ingr " << i + 1 << ": ";///
+			 in >> sursa.gramajIngrediente[i];
+		 }
+	 
+	 else {
+		 p.nrIngrediente = 0;
+		 p.gramajIngrediente = nullptr;
 	 }
-	cout << endl << "Vegan: " << sursa.esteVegana;
-	in >> sursa.esteVegana;
-	 cout << endl << "Nr prajituri: " << Prajitura::NrPrajituri;
-	 in >> Prajitura::NrPrajituri;
+
 	 return in;
- }
+}
+
  Prajitura operator+(float gramajNou, Prajitura sursa) {///
 	 if (gramajNou > 0) {///
 		 Prajitura copie = sursa;
